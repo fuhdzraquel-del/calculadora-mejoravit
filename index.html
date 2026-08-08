@@ -22,7 +22,7 @@
     .btn-calc { width: 100%; background-color: #003168; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 20px; transition: background 0.3s; }
     .btn-calc:hover { background-color: #001f42; }
     
-    /* Recuadro de Resultados / Infografía */
+    /* Recuadro de Resultados */
     #infografia { background: #ffffff; border: 2px solid #003168; border-radius: 10px; padding: 20px; margin-top: 10px; }
     .infografia-header { text-align: center; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; }
     .infografia-title { font-size: 14px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
@@ -38,7 +38,6 @@
     .btn-download:hover { background-color: #218838; }
   </style>
 
-  <!-- Librería para capturar y descargar como PNG -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
@@ -78,7 +77,6 @@
 
   <button class="btn-calc" onclick="calcular()">Calcular Crédito Estimado</button>
 
-  <!-- Recuadro de Infografía que se descarga -->
   <div id="infografia">
     <div class="infografia-header">
       <div class="infografia-title">Monto de Crédito Estimado</div>
@@ -110,7 +108,6 @@
     </div>
   </div>
 
-  <!-- Botón de Descarga -->
   <div style="text-align: center; margin-top: 20px;">
     <button class="btn-download" onclick="descargarInfografia()">
       📥 Descargar Infografía (Imagen PNG)
@@ -122,8 +119,6 @@
   function calcular() {
     const subcuenta = parseFloat(document.getElementById('subcuenta').value) || 0;
     const salario = parseFloat(document.getElementById('salario').value) || 0;
-    
-    // Cálculo exacto del 5% patronal
     const aportacionPatronal = salario * 0.05;
 
     document.getElementById('resSubcuenta').innerText = '$' + subcuenta.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
