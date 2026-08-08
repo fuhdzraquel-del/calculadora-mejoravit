@@ -7,7 +7,7 @@
   <style>
     :root {
       --primary-color: #003366;
-      --secondary-color: #e30613;
+      --infonavit-red: #d31227;
       --bg-color: #f4f7f9;
       --card-bg: #ffffff;
       --border-color: #dcdcdc;
@@ -22,7 +22,7 @@
     }
 
     .calculator-container {
-      max-width: 800px;
+      max-width: 850px;
       margin: 0 auto;
       background: var(--card-bg);
       border-radius: 12px;
@@ -148,37 +148,83 @@
       color: var(--primary-color);
     }
 
+    /* Estilos Estilo Infonavit */
     .amort-table-container {
-      max-height: 350px;
+      max-height: 420px;
       overflow-y: auto;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 8px;
       margin-top: 15px;
+      padding: 10px 5px;
+      background-color: #fff;
     }
 
     table.amort-table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 4px 4px;
       font-size: 0.85em;
-      text-align: right;
+      text-align: center;
     }
 
-    table.amort-table th {
-      position: sticky;
-      top: 0;
-      background-color: var(--primary-color);
+    /* Estilo de los bloques rojos superiores */
+    .th-red {
+      background-color: var(--infonavit-red);
       color: white;
-      padding: 8px;
-      font-weight: 600;
+      font-weight: bold;
+      border-radius: 12px;
+      padding: 10px 4px;
+      vertical-align: middle;
+      font-size: 0.95em;
     }
+
+    .th-subhead {
+      background-color: #ffffff;
+      color: #000;
+      font-weight: bold;
+      font-size: 0.8em;
+      border-radius: 6px;
+      padding: 6px 2px;
+      border: 1px solid #ddd;
+    }
+
+    /* Iconos de operación entre columnas */
+    .th-operator {
+      width: 24px;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    .circle-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .circle-plus { background-color: #72b043; }
+    .circle-minus { background-color: var(--infonavit-red); }
+    .circle-equal { background-color: #0055a5; }
 
     table.amort-table td {
-      padding: 8px;
-      border-bottom: 1px solid #eee;
+      padding: 6px 4px;
+      font-size: 0.9em;
+      color: #222;
+      vertical-align: middle;
     }
 
-    table.amort-table tr:nth-child(even) {
-      background-color: #f9f9f9;
+    table.amort-table td.num-cell {
+      text-align: right;
+      font-family: monospace, monospace;
+      font-size: 1em;
+    }
+
+    table.amort-table tr:nth-child(even) td {
+      background-color: #f7f9fa;
     }
 
     .summary-text {
@@ -255,6 +301,10 @@
         <td>10.00%</td>
       </tr>
       <tr>
+        <td>Plazo:</td>
+        <td>5 años</td>
+      </tr>
+      <tr>
         <td>Tiempo de Pago Real Estimado:</td>
         <td id="tiempoRealDisplay">-</td>
       </tr>
@@ -265,11 +315,25 @@
       <table class="amort-table">
         <thead>
           <tr>
-            <th>Mes</th>
-            <th>Retención Mensual</th>
-            <th>Patrón Aporta</th>
-            <th>Interés</th>
-            <th>Saldo Final</th>
+            <th class="th-red" style="width: 8%;">Mes</th>
+            <th class="th-red" style="width: 18%;">Saldo</th>
+            <th class="th-operator"><span class="circle-icon circle-plus">+</span></th>
+            <th class="th-red" style="width: 18%;">Interés</th>
+            <th class="th-operator"><span class="circle-icon circle-minus">-</span></th>
+            <th class="th-red" colspan="2" style="width: 36%;">Pago del Crédito</th>
+            <th class="th-operator"><span class="circle-icon circle-equal">=</span></th>
+            <th class="th-red" style="width: 18%;">Saldo Final</th>
+          </tr>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th class="th-subhead">1 Tu retención mensual</th>
+            <th class="th-subhead">2 Tu patrón aporta</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="amortBody">
@@ -292,16 +356,10 @@
       return;
     }
 
-    // 1. Aportación patronal mensual (5% del salario base)
     const patronMensual = salario * 0.05;
-    
-    // 2. Subcuenta ajustada según desfase
     const ssvAjustado = ssvBase + (patronMensual * desfaseMeses);
-
-    // 3. Monto de crédito (90% del SSV ajustado)
     const montoCredito = ssvAjustado * 0.90;
 
-    // 4. Retención de nómina a 5 años (10% tasa de interés)
     const factorRetencion = 0.021247;
     const retencionMensual = montoCredito * factorRetencion;
 
@@ -310,7 +368,6 @@
     document.getElementById('retencionDisplay').innerText = formatCurrency(retencionMensual);
     document.getElementById('patronAportaDisplay').innerText = formatCurrency(patronMensual);
 
-    // 5. Tabla de amortización dinámica
     const amortBody = document.getElementById('amortBody');
     amortBody.innerHTML = '';
 
@@ -320,18 +377,17 @@
 
     while (saldo > 0.01 && mes < 60) {
       mes++;
-      let interes = saldo * tasaMensual;
+      let saldoInicial = saldo;
+      let interes = saldoInicial * tasaMensual;
       
-      // Pago combinado: lo del trabajador + lo del patrón
       let pagoTotal = retencionMensual + patronMensual;
       let amortizacionCapital = pagoTotal - interes;
 
       let retencionAplicada = retencionMensual;
       let patronAplicado = patronMensual;
 
-      if (saldo - amortizacionCapital <= 0) {
-        // Último mes donde se liquida
-        let saldoAbonar = saldo + interes;
+      if (saldoInicial - amortizacionCapital <= 0) {
+        let saldoAbonar = saldoInicial + interes;
         if (saldoAbonar <= retencionMensual) {
           retencionAplicada = saldoAbonar;
           patronAplicado = 0;
@@ -346,10 +402,14 @@
 
       const row = `<tr>
         <td>${mes}</td>
-        <td>${formatCurrency(retencionAplicada)}</td>
-        <td>${formatCurrency(patronAplicado)}</td>
-        <td>${formatCurrency(interes)}</td>
-        <td>${formatCurrency(saldo)}</td>
+        <td class="num-cell">${formatCurrency(saldoInicial)}</td>
+        <td class="th-operator"></td>
+        <td class="num-cell">${formatCurrency(interes)}</td>
+        <td class="th-operator"></td>
+        <td class="num-cell">${formatCurrency(retencionAplicada)}</td>
+        <td class="num-cell">${formatCurrency(patronAplicado)}</td>
+        <td class="th-operator"></td>
+        <td class="num-cell">${formatCurrency(saldo)}</td>
       </tr>`;
       
       amortBody.innerHTML += row;
@@ -357,7 +417,6 @@
       if (saldo === 0) break;
     }
 
-    // Formatear el tiempo de pago real en años y meses
     const anosReales = Math.floor(mes / 12);
     const mesesRestantes = mes % 12;
     let textoTiempo = "";
