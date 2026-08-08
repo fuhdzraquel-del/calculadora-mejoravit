@@ -149,7 +149,7 @@
     }
 
     .amort-table-container {
-      max-height: 300px;
+      max-height: 350px;
       overflow-y: auto;
       border: 1px solid var(--border-color);
       border-radius: 6px;
@@ -202,26 +202,26 @@
     <div class="form-grid">
       <div class="form-group">
         <label for="subcuentaAfore">Saldo Subcuenta Vivienda (AFORE):</label>
-        <input type="number" id="subcuentaAfore" placeholder="Ej. 38000" step="0.01" required>
+        <input type="number" id="subcuentaAfore" placeholder="Ej. 41636.58" step="0.01" required>
       </div>
 
       <div class="form-group">
         <label for="salarioMensual">Salario Mensual Bruto (MXN):</label>
-        <input type="number" id="salarioMensual" placeholder="Ej. 10000" step="0.01" required>
+        <input type="number" id="salarioMensual" placeholder="Ej. 13493" step="0.01" required>
       </div>
 
       <div class="form-group">
         <label for="desfaseMeses">Desfase del Estado de Cuenta AFORE:</label>
         <select id="desfaseMeses">
-          <option value="0">Al día (0 meses)</option>
+          <option value="0" selected>Al día (0 meses)</option>
           <option value="2">2 meses atrás (1 bimestre)</option>
-          <option value="4" selected>4 meses atrás (2 bimestres)</option>
+          <option value="4">4 meses atrás (2 bimestres)</option>
           <option value="6">6 meses atrás (3 bimestres)</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="plazo">Plazo Seleccionado:</label>
+        <label for="plazo">Plazo Base Contratado:</label>
         <select id="plazo" disabled>
           <option value="5">5 años (60 meses)</option>
         </select>
@@ -247,16 +247,16 @@
         <td id="retencionDisplay">$0.00</td>
       </tr>
       <tr>
+        <td>Aportación Patronal Mensual (5%):</td>
+        <td id="patronAportaDisplay">$0.00</td>
+      </tr>
+      <tr>
         <td>Tasa de Interés Anual:</td>
         <td>10.00%</td>
       </tr>
       <tr>
-        <td>Plazo Teórico:</td>
-        <td>5 años</td>
-      </tr>
-      <tr>
-        <td>Tiempo Estimado de Pago Real:</td>
-        <td id="tiempoRealDisplay">2 años y 5 meses</td>
+        <td>Tiempo de Pago Real Estimado:</td>
+        <td id="tiempoRealDisplay">-</td>
       </tr>
     </table>
 
@@ -267,7 +267,7 @@
           <tr>
             <th>Mes</th>
             <th>Retención Mensual</th>
-            <th>Aportación Patrón (5%)</th>
+            <th>Patrón Aporta</th>
             <th>Interés</th>
             <th>Saldo Final</th>
           </tr>
@@ -277,7 +277,7 @@
       </table>
     </div>
 
-    <p class="summary-text">* La aportación patronal del 5% se abona de manera bimestral directamente al capital, reduciendo significativamente el tiempo total de liquidación del crédito.</p>
+    <p class="summary-text">* La aportación patronal directa al saldo reduce el plazo efectivo del crédito respecto a los 5 años teóricos.</p>
   </div>
 </div>
 
@@ -292,39 +292,53 @@
       return;
     }
 
-    // 1. Ajuste de Subcuenta por desfase (5% del salario por mes)
-    const aportacionMensualPatron = salario * 0.05;
-    const ssvAjustado = ssvBase + (aportacionMensualPatron * desfaseMeses);
+    // 1. Aportación patronal mensual (5% del salario base)
+    const patronMensual = salario * 0.05;
+    
+    // 2. Subcuenta ajustada según desfase
+    const ssvAjustado = ssvBase + (patronMensual * desfaseMeses);
 
-    // 2. Monto Crédito Estimado (90% del SSV)
+    // 3. Monto de crédito (90% del SSV ajustado)
     const montoCredito = ssvAjustado * 0.90;
 
-    // 3. Retención Mensual Estimada (Factor 10% anual a 5 años)
-    const factorAnual = 0.021247;
-    const retencionMensual = montoCredito * factorAnual;
+    // 4. Retención de nómina a 5 años (10% tasa de interés)
+    const factorRetencion = 0.021247;
+    const retencionMensual = montoCredito * factorRetencion;
 
-    // Actualizar visualización principal
     document.getElementById('montoCreditoDisplay').innerText = formatCurrency(montoCredito) + " MXN";
     document.getElementById('ssvAjustadoDisplay').innerText = formatCurrency(ssvAjustado);
     document.getElementById('retencionDisplay').innerText = formatCurrency(retencionMensual);
+    document.getElementById('patronAportaDisplay').innerText = formatCurrency(patronMensual);
 
-    // 4. Generación de Tabla de Amortización
+    // 5. Tabla de amortización dinámica
     const amortBody = document.getElementById('amortBody');
     amortBody.innerHTML = '';
 
     let saldo = montoCredito;
     const tasaMensual = 0.10 / 12;
-    let mes = 1;
-    const aportacionBimestral = aportacionMensualPatron * 2;
+    let mes = 0;
 
-    while (saldo > 0 && mes <= 60) {
-      const interes = saldo * tasaMensual;
-      let pagoPatron = (mes % 2 === 0) ? aportacionBimestral : 0;
+    while (saldo > 0.01 && mes < 60) {
+      mes++;
+      let interes = saldo * tasaMensual;
       
-      let amortizacionCapital = (retencionMensual - interes) + pagoPatron;
+      // Pago combinado: lo del trabajador + lo del patrón
+      let pagoTotal = retencionMensual + patronMensual;
+      let amortizacionCapital = pagoTotal - interes;
 
-      if (saldo - amortizacionCapital < 0) {
-        amortizacionCapital = saldo;
+      let retencionAplicada = retencionMensual;
+      let patronAplicado = patronMensual;
+
+      if (saldo - amortizacionCapital <= 0) {
+        // Último mes donde se liquida
+        let saldoAbonar = saldo + interes;
+        if (saldoAbonar <= retencionMensual) {
+          retencionAplicada = saldoAbonar;
+          patronAplicado = 0;
+        } else {
+          retencionAplicada = retencionMensual;
+          patronAplicado = saldoAbonar - retencionMensual;
+        }
         saldo = 0;
       } else {
         saldo -= amortizacionCapital;
@@ -332,8 +346,8 @@
 
       const row = `<tr>
         <td>${mes}</td>
-        <td>${formatCurrency(retencionMensual)}</td>
-        <td>${formatCurrency(pagoPatron)}</td>
+        <td>${formatCurrency(retencionAplicada)}</td>
+        <td>${formatCurrency(patronAplicado)}</td>
         <td>${formatCurrency(interes)}</td>
         <td>${formatCurrency(saldo)}</td>
       </tr>`;
@@ -341,18 +355,16 @@
       amortBody.innerHTML += row;
 
       if (saldo === 0) break;
-      mes++;
     }
 
-    // Calcular meses reales
+    // Formatear el tiempo de pago real en años y meses
     const anosReales = Math.floor(mes / 12);
     const mesesRestantes = mes % 12;
     let textoTiempo = "";
     if (anosReales > 0) textoTiempo += `${anosReales} año(s) `;
-    if (mesesRestantes > 0) textoTiempo += `y ${mesesRestantes} mes(es)`;
+    if (mesesRestantes > 0) textoTiempo += `y ${mesesRestantes} mes(es) `;
     
-    document.getElementById('tiempoRealDisplay').innerText = textoTiempo + ` (${mes} meses)`;
-
+    document.getElementById('tiempoRealDisplay').innerText = `${textoTiempo.trim()} (${mes} meses)`;
     document.getElementById('results').style.display = 'block';
   }
 
