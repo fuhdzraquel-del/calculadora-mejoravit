@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora Estimada Mejoravit Solo para Ti</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --primary-color: #003366;
@@ -280,7 +281,7 @@
       <div class="amount" id="montoCreditoDisplay">$0.00 MXN</div>
     </div>
 
-    <table class="info-table">
+      <table id="infografia" class="info-table">
       <tr>
         <td>Saldo Subcuenta de Vivienda (Ajustado):</td>
         <td id="ssvAjustadoDisplay">$0.00</td>
@@ -306,7 +307,11 @@
         <td id="tiempoRealDisplay">-</td>
       </tr>
     </table>
-
+<div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+  <button onclick="descargarInfografia()" style="background-color: #28a745; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+    📥 Descargar Infografía (Imagen PNG)
+  </button>
+</div>
     <h3>Tabla de Amortización Estimada</h3>
     <div class="amort-table-container">
       <table class="amort-table">
@@ -432,6 +437,15 @@
       currency: 'MXN'
     }).format(amount);
   }
+  function descargarInfografia() {
+  const contenedor = document.getElementById('infografia');
+  html2canvas(contenedor, { scale: 2 }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'Resumen_Mejoravit.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
 </script>
 
 </body>
