@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Estimada Mejoravit Solo para Ti</title>
+  <style>
+    :root {
+      --primary-color: #003366;
+      --secondary-color: #e30613;
+      --bg-color: #f4f7f9;
+      --card-bg: #ffffff;
+      --border-color: #dcdcdc;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .calculator-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 25px;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-top: 0;
+    }
+
+    .disclaimer-box {
+      background-color: #fff3cd;
+      border-left: 5px solid #ffc107;
+      color: #856404;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      line-height: 1.4;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    input, select {
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 1em;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #002244;
+    }
+
+    .result-section {
+      display: none;
+      margin-top: 30px;
+      border-top: 2px solid var(--border-color);
+      padding-top: 20px;
+    }
+
+    .credit-header {
+      text-align: center;
+      border: 2px solid var(--primary-color);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: #f0f4f8;
+    }
+
+    .credit-header h3 {
+      margin: 0;
+      color: #555;
+      font-size: 1.1em;
+    }
+
+    .credit-header .amount {
+      font-size: 2.2em;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin: 5px 0 0 0;
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .info-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .info-table td:nth-child(1) {
+      font-weight: bold;
+      color: #444;
+      width: 50%;
+    }
+
+    .info-table td:nth-child(2) {
+      text-align: right;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .amort-table-container {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      margin-top: 15px;
+    }
+
+    table.amort-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85em;
+      text-align: right;
+    }
+
+    table.amort-table th {
+      position: sticky;
+      top: 0;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 8px;
+      font-weight: 600;
+    }
+
+    table.amort-table td {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    table.amort-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .summary-text {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 15px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator-container">
+  <h2>Calculadora Mejoravit Solo para Ti</h2>
+
+  <div class="disclaimer-box">
+    <strong>⚠️ NOTA IMPORTANTE:</strong> Esta herramienta proporciona exclusivamente una <strong>estimación aproximada</strong> basada en proyecciones estándar de Infonavit. Para obtener la cifra exacta y oficial autorizada, es indispensable realizar la precalificación directamente dentro de <strong>Mi Cuenta Infonavit</strong>.
+  </div>
+
+  <form id="calcForm">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="subcuentaAfore">Saldo Subcuenta Vivienda (AFORE):</label>
+        <input type="number" id="subcuentaAfore" placeholder="Ej. 38000" step="0.01" required>
+      </div>
+
+      <div class="form-group">
+        <label for="salarioMensual">Salario Mensual Bruto (MXN):</label>
+        <input type="number" id="salarioMensual" placeholder="Ej. 10000" step="0.01" required>
+      </div>
+
+      <div class="form-group">
+        <label for="desfaseMeses">Desfase del Estado de Cuenta AFORE:</label>
+        <select id="desfaseMeses">
+          <option value="0">Al día (0 meses)</option>
+          <option value="2">2 meses atrás (1 bimestre)</option>
+          <option value="4" selected>4 meses atrás (2 bimestres)</option>
+          <option value="6">6 meses atrás (3 bimestres)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="plazo">Plazo Seleccionado:</label>
+        <select id="plazo" disabled>
+          <option value="5">5 años (60 meses)</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="button" onclick="calcularCredito()">Calcular Crédito Estimado</button>
+  </form>
+
+  <div id="results" class="result-section">
+    <div class="credit-header">
+      <h3>Monto de Crédito Estimado</h3>
+      <div class="amount" id="montoCreditoDisplay">$0.00 MXN</div>
+    </div>
+
+    <table class="info-table">
+      <tr>
+        <td>Saldo Subcuenta de Vivienda (Ajustado):</td>
+        <td id="ssvAjustadoDisplay">$0.00</td>
+      </tr>
+      <tr>
+        <td>Retención de Nómina Mensual:</td>
+        <td id="retencionDisplay">$0.00</td>
+      </tr>
+      <tr>
+        <td>Tasa de Interés Anual:</td>
+        <td>10.00%</td>
+      </tr>
+      <tr>
+        <td>Plazo Teórico:</td>
+        <td>5 años</td>
+      </tr>
+      <tr>
+        <td>Tiempo Estimado de Pago Real:</td>
+        <td id="tiempoRealDisplay">2 años y 5 meses</td>
+      </tr>
+    </table>
+
+    <h3>Tabla de Amortización Estimada</h3>
+    <div class="amort-table-container">
+      <table class="amort-table">
+        <thead>
+          <tr>
+            <th>Mes</th>
+            <th>Retención Mensual</th>
+            <th>Aportación Patrón (5%)</th>
+            <th>Interés</th>
+            <th>Saldo Final</th>
+          </tr>
+        </thead>
+        <tbody id="amortBody">
+        </tbody>
+      </table>
+    </div>
+
+    <p class="summary-text">* La aportación patronal del 5% se abona de manera bimestral directamente al capital, reduciendo significativamente el tiempo total de liquidación del crédito.</p>
+  </div>
+</div>
+
+<script>
+  function calcularCredito() {
+    const ssvBase = parseFloat(document.getElementById('subcuentaAfore').value) || 0;
+    const salario = parseFloat(document.getElementById('salarioMensual').value) || 0;
+    const desfaseMeses = parseInt(document.getElementById('desfaseMeses').value) || 0;
+
+    if (ssvBase <= 0 || salario <= 0) {
+      alert("Por favor ingresa valores válidos de Saldo y Salario.");
+      return;
+    }
+
+    // 1. Ajuste de Subcuenta por desfase (5% del salario por mes)
+    const aportacionMensualPatron = salario * 0.05;
+    const ssvAjustado = ssvBase + (aportacionMensualPatron * desfaseMeses);
+
+    // 2. Monto Crédito Estimado (90% del SSV)
+    const montoCredito = ssvAjustado * 0.90;
+
+    // 3. Retención Mensual Estimada (Factor 10% anual a 5 años)
+    const factorAnual = 0.021247;
+    const retencionMensual = montoCredito * factorAnual;
+
+    // Actualizar visualización principal
+    document.getElementById('montoCreditoDisplay').innerText = formatCurrency(montoCredito) + " MXN";
+    document.getElementById('ssvAjustadoDisplay').innerText = formatCurrency(ssvAjustado);
+    document.getElementById('retencionDisplay').innerText = formatCurrency(retencionMensual);
+
+    // 4. Generación de Tabla de Amortización
+    const amortBody = document.getElementById('amortBody');
+    amortBody.innerHTML = '';
+
+    let saldo = montoCredito;
+    const tasaMensual = 0.10 / 12;
+    let mes = 1;
+    const aportacionBimestral = aportacionMensualPatron * 2;
+
+    while (saldo > 0 && mes <= 60) {
+      const interes = saldo * tasaMensual;
+      let pagoPatron = (mes % 2 === 0) ? aportacionBimestral : 0;
+      
+      let amortizacionCapital = (retencionMensual - interes) + pagoPatron;
+
+      if (saldo - amortizacionCapital < 0) {
+        amortizacionCapital = saldo;
+        saldo = 0;
+      } else {
+        saldo -= amortizacionCapital;
+      }
+
+      const row = `<tr>
+        <td>${mes}</td>
+        <td>${formatCurrency(retencionMensual)}</td>
+        <td>${formatCurrency(pagoPatron)}</td>
+        <td>${formatCurrency(interes)}</td>
+        <td>${formatCurrency(saldo)}</td>
+      </tr>`;
+      
+      amortBody.innerHTML += row;
+
+      if (saldo === 0) break;
+      mes++;
+    }
+
+    // Calcular meses reales
+    const anosReales = Math.floor(mes / 12);
+    const mesesRestantes = mes % 12;
+    let textoTiempo = "";
+    if (anosReales > 0) textoTiempo += `${anosReales} año(s) `;
+    if (mesesRestantes > 0) textoTiempo += `y ${mesesRestantes} mes(es)`;
+    
+    document.getElementById('tiempoRealDisplay').innerText = textoTiempo + ` (${mes} meses)`;
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  function formatCurrency(amount) {
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN'
+    }).format(amount);
+  }
+</script>
+
+</body>
+</html>
