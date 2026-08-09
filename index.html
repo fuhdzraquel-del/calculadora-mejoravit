@@ -318,11 +318,6 @@
         <td id="tiempoRealDisplay">-</td>
       </tr>
     </table>
-<div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-  <button onclick="descargarInfografia()" style="background-color: #fa8200; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; cursor: pointer;">
-    📥 Descargar Infografía (Imagen PNG)
-  </button>
-</div>
     <h3>Tabla de Amortización Estimada</h3>
     <div class="amort-table-container">
       <table class="amort-table">
@@ -355,6 +350,11 @@
     </div>
 
     <p class="summary-text">* La aportación patronal directa al saldo reduce el plazo efectivo del crédito respecto a los 5 años teóricos.</p>
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+  <button id="btnDescargar" onclick="descargarInfografia()" style="background-color: #fa8200; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+    📥 Descargar Infografía (Imagen PNG)
+  </button>
+</div>
   </div>
 </div>
 
@@ -451,12 +451,23 @@ document.getElementById('displayNssCliente').innerText = document.getElementById
   }
   function descargarInfografia() {
   const contenedor = document.getElementById('results');
+    const boton = document.getElementById('btnDescargar');
+    if (boton) boton.style.display = 'none';
   
-  html2canvas(contenedor, { scale: 2, useCORS: true }).then(canvas => {
+  html2canvas(contenedor, { 
+    scale: 2, 
+    useCORS: true,
+    windowHeight: contenedor.scrollHeight
+  }).then(canvas => {
     const link = document.createElement('a');
     link.download = 'Cotizacion_Mejoravit.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
+    
+    // Mostramos el botón de nuevo
+    if (boton) boton.style.display = 'inline-block';
+  }).catch(() => {
+    if (boton) boton.style.display = 'inline-block';
   });
 }
 </script>
