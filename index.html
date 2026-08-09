@@ -458,7 +458,8 @@ document.getElementById('displayAmortNss').innerText = document.getElementById('
 
     const patronMensual = salario * 0.05;
     const ssvAjustado = ssvBase + (patronMensual * desfaseMeses);
-    const montoCredito = ssvAjustado * 0.90;
+    const montoCreditoCalculado = ssvAjustado * 0.90;
+const montoCredito = Math.min(montoCreditoCalculado, 169039.02);
     // Determinar Tasa de Interés según el monto
 let tasaInteresAnual;
 if (montoCredito < 47000) {
@@ -495,7 +496,8 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
   };
 
   const factorRetencion = factores[plazoAnios] || 0.013215;
-  const retencionMensual = montoCredito * factorRetencion;
+  const pagoTotalCredito = montoCredito * factorRetencion;
+const retencionMensual = Math.max(0, pagoTotalCredito - patronMensual);
 
     document.getElementById('montoCreditoDisplay').innerText = formatCurrency(montoCredito) + " MXN";
     document.getElementById('ssvAjustadoDisplay').innerText = formatCurrency(ssvAjustado);
@@ -507,7 +509,7 @@ document.getElementById('displayNssCliente').innerText = document.getElementById
     amortBody.innerHTML = '';
 
     let saldo = montoCredito;
-    const tasaMensual = 0.10 / 12;
+    const tasaMensual = tasaInteresAnual / 12;
     let mes = 0;
 
     while (saldo > 0.01 && mes < maxMeses) {
