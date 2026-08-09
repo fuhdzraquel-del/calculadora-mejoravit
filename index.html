@@ -180,7 +180,7 @@
       background-color: #ffffff !important;
       color: #333333 !important;
       font-weight: bold;
-      font-size: 0.75em;
+      font-size: 1em;
       border-radius: 8px !important;
       padding: 6px 2px !important;
       border: 1px solid #ccc;
@@ -368,7 +368,7 @@
       </tr>
       <tr>
         <td>Tasa de Interés Anual:</td>
-        <td>10.00%</td>
+        <td id="tasaDisplay">10.00%</td>
       </tr>
       <tr>
         <td>Plazo:</td>
@@ -442,6 +442,16 @@ document.getElementById('displayAmortNss').innerText = document.getElementById('
     const patronMensual = salario * 0.05;
     const ssvAjustado = ssvBase + (patronMensual * desfaseMeses);
     const montoCredito = ssvAjustado * 0.90;
+    // Determinar Tasa de Interés según el monto
+let tasaInteresAnual;
+if (montoCredito < 47000) {
+  tasaInteresAnual = 0.10; // 10%
+} else {
+  tasaInteresAnual = 0.11; // 11%
+}
+
+// Actualizar en la pantalla el valor de la tasa
+document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFixed(2) + '%';
     // Obtener el selector de plazo
   const selectPlazo = document.getElementById('selectPlazo');
 
