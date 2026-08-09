@@ -441,8 +441,8 @@ document.getElementById('displayAmortNss').innerText = document.getElementById('
 document.getElementById('plazoDisplay').innerText = plazoAnios + ' años';
     let maxMeses = (plazoAnios === 5) ? 60 : 120;
 
-    const factorRetencion = 0.021247;
-    const retencionMensual = montoCredito * factorRetencion;
+    const factorRetencion = (plazoAnios === 5) ? 0.021247 : 0.013215;
+const retencionMensual = montoCredito * factorRetencion;
 
     document.getElementById('montoCreditoDisplay').innerText = formatCurrency(montoCredito) + " MXN";
     document.getElementById('ssvAjustadoDisplay').innerText = formatCurrency(ssvAjustado);
