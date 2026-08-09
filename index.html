@@ -262,16 +262,6 @@
     max-width: 92% !important;
   }
       
-/* Reduce el tamaño general del banner Cliente / NSS */
-  div[style*="background-color: #f0f4f8"],
-  div[style*="background-color: #F0F4F8"],
-  div[style*="background-color: #f0f4f8"] *,
-  div[style*="background-color: #F0F4F8"] * {
-    font-size: 10px !important;
-    padding: 2px 5px !important;
-  }
-
-  /* El salto de página va en la caja contenedora general de la tabla */
   .amort-table-container {
     page-break-before: always !important;
     max-height: none !important;
@@ -389,12 +379,11 @@
         <td id="tiempoRealDisplay">-</td>
       </tr>
     </table>
-    <h3 style="margin-top: 0;">Tabla de Amortización Estimada</h3>
-    <div style="background-color: #f0f4f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; border-left: 4px solid #fa8200; font-size: 14px; color: #003168; font-weight: bold;">
-  <span>Cliente: <span id="displayAmortCliente" style="color: #333; font-weight: normal;">-</span></span>
-  <span style="margin-left: 20px;">NSS: <span id="displayAmortNss" style="color: #333; font-weight: normal;">-</span></span>
-</div>
     <div class="amort-table-container">
+  <h3 style="margin-top: 0; font-size: 14px;">Tabla de Amortización Estimada</h3>
+  <div style="background-color: #f0f4f8; padding: 6px 10px; border-radius: 6px; margin-bottom: 8px; border-left: 4px solid #fa8200; font-size: 11px; color: #003168; font-weight: bold;">
+    <span>Cliente: <span id="displayAmortCliente" style="color: #333; font-weight: normal;"></span></span>
+    <span style="margin-left: 20px;">NSS: <span id="displayAmortNss" style="color: #333; font-weight: normal;"></span></span>
       <table class="amort-table">
         <thead>
           <tr>
