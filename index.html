@@ -495,9 +495,11 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
     10: 0.013215
   };
 
-  const factorRetencion = factores[plazoAnios] || 0.013215;
-  const pagoTotalCredito = montoCredito * factorRetencion;
-const retencionMensual = Math.max(0, pagoTotalCredito - patronMensual);
+  const factorCuotaBase = factores[5]; 
+const pagoTotalCredito = montoCredito * factorCuotaBase;
+
+const retencionCalculada = pagoTotalCredito - patronMensual;
+const retencionMensual = retencionCalculada > 0 ? retencionCalculada : 0;
 
     document.getElementById('montoCreditoDisplay').innerText = formatCurrency(montoCredito) + " MXN";
     document.getElementById('ssvAjustadoDisplay').innerText = formatCurrency(ssvAjustado);
