@@ -385,6 +385,7 @@ document.getElementById('displayAmortNss').innerText = document.getElementById('
     const montoCredito = ssvAjustado * 0.90;
     let plazoAnios = (montoCredito < 47000) ? 5 : 10;
 document.getElementById('plazoDisplay').innerText = plazoAnios + ' años';
+    let maxMeses = (plazoAnios === 5) ? 60 : 120;
 
     const factorRetencion = 0.021247;
     const retencionMensual = montoCredito * factorRetencion;
@@ -402,7 +403,7 @@ document.getElementById('displayNssCliente').innerText = document.getElementById
     const tasaMensual = 0.10 / 12;
     let mes = 0;
 
-    while (saldo > 0.01 && mes < 60) {
+    while (saldo > 0.01 && mes < maxMeses) {
       mes++;
       let saldoInicial = saldo;
       let interes = saldoInicial * tasaMensual;
