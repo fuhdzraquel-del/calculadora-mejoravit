@@ -312,7 +312,7 @@
       </tr>
       <tr>
         <td>Plazo:</td>
-        <td>5 años</td>
+        <td id="plazoDisplay">5 años</td>
       </tr>
       <tr>
         <td>Tiempo de Pago Real Estimado:</td>
@@ -383,6 +383,8 @@ document.getElementById('displayAmortNss').innerText = document.getElementById('
     const patronMensual = salario * 0.05;
     const ssvAjustado = ssvBase + (patronMensual * desfaseMeses);
     const montoCredito = ssvAjustado * 0.90;
+    let plazoAnios = (montoCredito < 47000) ? 5 : 10;
+document.getElementById('plazoDisplay').innerText = plazoAnios + ' años';
 
     const factorRetencion = 0.021247;
     const retencionMensual = montoCredito * factorRetencion;
@@ -482,27 +484,28 @@ document.getElementById('displayNssCliente').innerText = document.getElementById
   });
 }
   function descargarTablaPDF() {
-  const cliente = document.getElementById('nombreCliente').value || 'Cliente';
-  const nss = document.getElementById('nssCliente').value || '';
-  
-  const tablaContainer = document.querySelector('.amort-table-container').parentElement;
+  // Ocultamos temporalmente los elementos que no queremos en el PDF/Impresión
+  const calcContainer = document.querySelector('.calculator-container');
+  const disclaimer = document.querySelector('.disclaimer-box');
+  const form = document.getElementById('calcForm');
   const botones = document.getElementById('btnDescargarPDF').parentElement;
-  
-  botones.style.display = 'none';
 
-  const opciones = {
-    margin:       [10, 10, 10, 10],
-    filename:     `Tabla_Amortizacion_${cliente.replace(/\s+/g, '_')}.pdf`,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true },
-    jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
-  };
+  // Guardamos sus displays originales
+  const displayForm = form ? form.style.display : '';
+  const displayDisc = disclaimer ? disclaimer.style.display : '';
 
-  html2pdf().set(opciones).from(tablaContainer).save().then(() => {
-    botones.style.display = 'flex';
-  }).catch(() => {
-    botones.style.display = 'flex';
-  });
+  // Ocultamos formulario y notas para dejar SOLO el reporte
+  if (form) form.style.display = 'none';
+  if (disclaimer) disclaimer.style.display = 'none';
+  if (botones) botones.style.display = 'none';
+
+  // Abrimos la ventana de guardar PDF / Imprimir del navegador
+  window.print();
+
+  // Restauramos la pantalla normal después de guardar
+  if (form) form.style.display = displayForm;
+  if (disclaimer) disclaimer.style.display = displayDisc;
+  if (botones) botones.style.display = 'flex';
 }
 </script>
 </body>
