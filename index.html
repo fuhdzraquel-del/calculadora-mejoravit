@@ -261,8 +261,13 @@
     width: 92% !important;
     max-width: 92% !important;
   }
-
+      
+/* Reduce el texto de datos del cliente */
+  #displayNombreCliente, #displayNssCliente {
+    font-size: 11px !important;
+  }
   .amort-table-container {
+    page-break-before: always !important;
     max-height: none !important;
     overflow: visible !important;
     width: 100% !important;
@@ -378,7 +383,7 @@
         <td id="tiempoRealDisplay">-</td>
       </tr>
     </table>
-    <h3>Tabla de Amortización Estimada</h3>
+    <h3 style="page-break-before: always;">Tabla de Amortización Estimada</h3>
     <div style="background-color: #f0f4f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; border-left: 4px solid #fa8200; font-size: 14px; color: #003168; font-weight: bold;">
   <span>Cliente: <span id="displayAmortCliente" style="color: #333; font-weight: normal;">-</span></span>
   <span style="margin-left: 20px;">NSS: <span id="displayAmortNss" style="color: #333; font-weight: normal;">-</span></span>
