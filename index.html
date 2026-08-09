@@ -495,12 +495,18 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
     10: 0.013215
   };
 
-  const factorRetencion = factores[plazoAnios] || 0.021247;
-const factorFinal = (montoCredito < 47000) ? 0.049062 : 0.052572;
+  // 1. Obtener el factor según el plazo seleccionado en el menú desplegable
+  let factorBase = factores[plazoAnios] || 0.021247;
 
-const pagoTotalCredito = montoCredito * factorFinal;
-const retencionCalculada = pagoTotalCredito - patronMensual;
-const retencionMensual = retencionCalculada > 0 ? retencionCalculada : 0;
+  // 2. Si el crédito es pequeño (tasa 10%), se ajusta la cuota base
+  if (montoCredito < 47000) {
+    factorBase = 0.039252;
+  }
+
+  // 3. Cálculo global de la cuota y retención
+  const pagoTotalCredito = montoCredito * factorBase;
+  const retencionCalculada = pagoTotalCredito - patronMensual;
+  const retencionMensual = retencionCalculada > 0 ? retencionCalculada : 0;
 
     document.getElementById('montoCreditoDisplay').innerText = formatCurrency(montoCredito) + " MXN";
     document.getElementById('ssvAjustadoDisplay').innerText = formatCurrency(ssvAjustado);
