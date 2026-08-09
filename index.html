@@ -286,6 +286,23 @@
     page-break-inside: avoid !important;
   }
 }
+
+    @media print {
+/* Forzamos que la tabla sea compacta solo en PDF */
+table.amort-table td {
+padding: 3px 2px !important;
+font-size: 0.8em !important;
+}
+  
+table.amort-table td.num-cell {
+font-size: 0.85em !important;
+}
+
+.th-white-subbox {
+font-size: 0.7em !important;
+padding: 2px !important;
+}
+}
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
