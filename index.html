@@ -231,6 +231,60 @@
       margin-top: 15px;
       font-style: italic;
     }
+    @media print {
+  /* Configuración de la hoja Carta Vertical */
+  @page {
+    size: letter portrait;
+    margin: 8mm;
+  }
+
+  body {
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 10px !important;
+  }
+
+  /* Ocultamos formulario y notas en el PDF */
+  #calcForm, 
+  .disclaimer-box, 
+  #btnDescargarPDF, 
+  #btnDescargar {
+    display: none !important;
+  }
+
+  /* Forzamos el contenedor al 100% del ancho */
+  .calculator-container {
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .amort-table-container {
+    max-height: none !important;
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  /* Ajustamos la tabla para que quepa sin recortarse */
+  .amort-table {
+    width: 100% !important;
+    font-size: 9px !important;
+    border-collapse: collapse !important;
+  }
+
+  .amort-table th, 
+  .amort-table td {
+    padding: 4px 2px !important;
+    text-align: center !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+  }
+}
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
