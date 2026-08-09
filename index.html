@@ -232,6 +232,7 @@
       font-style: italic;
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -319,6 +320,10 @@
       </tr>
     </table>
     <h3>Tabla de Amortización Estimada</h3>
+    <div style="background-color: #f0f4f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; border-left: 4px solid #fa8200; font-size: 14px; color: #003168; font-weight: bold;">
+  <span>Cliente: <span id="displayAmortCliente" style="color: #333; font-weight: normal;">-</span></span>
+  <span style="margin-left: 20px;">NSS: <span id="displayAmortNss" style="color: #333; font-weight: normal;">-</span></span>
+</div>
     <div class="amort-table-container">
       <table class="amort-table">
         <thead>
@@ -350,9 +355,13 @@
     </div>
 
     <p class="summary-text">* La aportación patronal directa al saldo reduce el plazo efectivo del crédito respecto a los 5 años teóricos.</p>
-    <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-  <button id="btnDescargar" onclick="descargarInfografia()" style="background-color: #fa8200; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; cursor: pointer;">
-    📥 Descargar Infografía (Imagen PNG)
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 20px; display: flex; justify-content: center; gap: 15px;">
+  <button id="btnDescargar" onclick="descargarInfografia()" style="background-color: #fa8200; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+    🖼️ Descargar Resumen (Imagen PNG)
+  </button>
+  
+  <button id="btnDescargarPDF" onclick="descargarTablaPDF()" style="background-color: #003168; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+    📄 Descargar Tabla de Amortización (PDF)
   </button>
 </div>
   </div>
@@ -360,6 +369,8 @@
 
 <script>
   function calcularCredito() {
+    document.getElementById('displayAmortCliente').innerText = document.getElementById('nombreCliente').value || 'N/A';
+document.getElementById('displayAmortNss').innerText = document.getElementById('nssCliente').value || 'N/A';
     const ssvBase = parseFloat(document.getElementById('subcuentaAfore').value) || 0;
     const salario = parseFloat(document.getElementById('salarioMensual').value) || 0;
     const desfaseMeses = parseInt(document.getElementById('desfaseMeses').value) || 0;
@@ -468,6 +479,29 @@ document.getElementById('displayNssCliente').innerText = document.getElementById
     if (boton) boton.style.display = 'inline-block';
   }).catch(() => {
     if (boton) boton.style.display = 'inline-block';
+  });
+}
+  function descargarTablaPDF() {
+  const cliente = document.getElementById('nombreCliente').value || 'Cliente';
+  const nss = document.getElementById('nssCliente').value || '';
+  
+  const tablaContainer = document.querySelector('.amort-table-container').parentElement;
+  const botones = document.getElementById('btnDescargarPDF').parentElement;
+  
+  botones.style.display = 'none';
+
+  const opciones = {
+    margin:       [10, 10, 10, 10],
+    filename:     `Tabla_Amortizacion_${cliente.replace(/\s+/g, '_')}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opciones).from(tablaContainer).save().then(() => {
+    botones.style.display = 'flex';
+  }).catch(() => {
+    botones.style.display = 'flex';
   });
 }
 </script>
