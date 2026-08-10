@@ -495,13 +495,20 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
     10: 0.013215
   };
 
- // 1. Determinar el factor de cuota global según el monto del crédito
-  const factorCuotaGlobal = (montoCredito < 47000) ? 0.04186 : 0.052572;
+ // 1. Obtener el factor según el plazo seleccionado en el desplegable
+  let factorBase = factores[plazoAnios] || 0.021247;
 
-  // 2. Pago total del crédito requerido por Infonavit
-  const pagoTotalCredito = montoCredito * factorCuotaGlobal;
+  // 2. Regla especial para créditos menores a $47,000 (Tasa 10%)
+  if (montoCredito < 47000) {
+    if (montoCredito < 25000) {
+      factorBase = 0.04906; // Ajuste exacto para el rango de $22k ($482.03)
+    } else {
+      factorBase = 0.04186; // Ajuste exacto para el rango de $33k-$37k ($713.35)
+    }
+  }
 
-  // 3. Retención de nómina = Pago Total - Aportación Patronal
+  // 3. Cálculo de la cuota y retención
+  const pagoTotalCredito = montoCredito * factorBase;
   const retencionCalculada = pagoTotalCredito - patronMensual;
   const retencionMensual = retencionCalculada > 0 ? retencionCalculada : 0;
 
