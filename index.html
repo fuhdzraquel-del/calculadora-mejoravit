@@ -495,17 +495,15 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
     10: 0.013215
   };
 
-  // Factor de pago global según el monto del crédito
-  const factorBase = (montoCredito < 47000) ? 0.04186 : 0.052572;
+ // 1. Determinar el factor de cuota global según el monto del crédito
+  const factorCuotaGlobal = (montoCredito < 47000) ? 0.04186 : 0.052572;
 
-  // Cuota total mensual calculada
-  const pagoTotalCredito = montoCredito * factorBase;
+  // 2. Pago total del crédito requerido por Infonavit
+  const pagoTotalCredito = montoCredito * factorCuotaGlobal;
 
-  // Retención de nómina para el trabajador
+  // 3. Retención de nómina = Pago Total - Aportación Patronal
   const retencionCalculada = pagoTotalCredito - patronMensual;
-  
-  // Si la aportación patronal supera la cuota o da negativo, asigna la retención mínima base
-  const retencionMensual = retencionCalculada > 0 ? retencionCalculada : (montoCredito * 0.01718);
+  const retencionMensual = retencionCalculada > 0 ? retencionCalculada : 0;
 
     document.getElementById('montoCreditoDisplay').innerText = formatCurrency(montoCredito) + " MXN";
     document.getElementById('ssvAjustadoDisplay').innerText = formatCurrency(ssvAjustado);
