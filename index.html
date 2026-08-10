@@ -500,10 +500,12 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
 
   // 2. Regla especial para créditos menores a $47,000 (Tasa 10%)
   if (montoCredito < 47000) {
-    if (montoCredito < 25000) {
-      factorBase = 0.04906; // Ajuste exacto para el rango de $22k ($482.03)
+    if (montoCredito < 28000) {
+      factorBase = 0.04906; // Rango ~$22k ($482.03)
+    } else if (montoCredito < 35000) {
+      factorBase = 0.04186; // Rango ~$33k ($713.35)
     } else {
-      factorBase = 0.04186; // Ajuste exacto para el rango de $33k-$37k ($713.35)
+      factorBase = 0.03925; // Rango ~$37k ($796.22)
     }
   }
 
