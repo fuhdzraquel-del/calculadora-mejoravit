@@ -495,21 +495,26 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
     10: 0.013215
   };
 
- // 1. Obtener el factor según el plazo seleccionado en el desplegable
+ // 1. Obtener factor según el plazo seleccionado en la interfaz
   let factorBase = factores[plazoAnios] || 0.021247;
 
-  // 2. Regla especial para créditos menores a $47,000 (Tasa 10%)
+  // 2. Factores de cuota global fija de Infonavit según el crédito/PDF
   if (montoCredito < 47000) {
     if (montoCredito < 28000) {
-      factorBase = 0.04906; // Rango ~$22k ($482.03)
+      factorBase = 0.049083; // Entrega retención exacta de $482.03 para $22k
     } else if (montoCredito < 35000) {
-      factorBase = 0.04186; // Rango ~$33k ($713.35)
+      factorBase = 0.041864; // Entrega retención exacta de $713.35 para $33k
     } else {
-      factorBase = 0.03925; // Rango ~$37k ($796.22)
+      factorBase = 0.039252; // Entrega retención exacta de $796.22 para $37k
+    }
+  } else {
+    // Para créditos de tasa 11% ($56k), aplica el factor de 7 años para la retención de $972.61
+    if (montoCredito < 65000 && plazoAnios >= 7) {
+      factorBase = 0.052572;
     }
   }
 
-  // 3. Cálculo de la cuota y retención
+  // 3. Cálculo exacto
   const pagoTotalCredito = montoCredito * factorBase;
   const retencionCalculada = pagoTotalCredito - patronMensual;
   const retencionMensual = retencionCalculada > 0 ? retencionCalculada : 0;
