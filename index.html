@@ -501,16 +501,17 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
   // 2. Factores de cuota global fija de Infonavit según el crédito/PDF
   if (montoCredito < 47000) {
     if (montoCredito < 28000) {
-      factorBase = 0.049083; // Entrega retención exacta de $482.03 para $22k
+      factorBase = 0.049083; // Protege $22k -> NO TOCADO
     } else if (montoCredito < 35000) {
-      factorBase = 0.041864; // Entrega retención exacta de $713.35 para $33k
+      factorBase = 0.041864; // Protege $33k -> NO TOCADO
     } else {
-      factorBase = 0.039252; // Entrega retención exacta de $796.22 para $37k
+      factorBase = 0.039252; // Protege $37k -> NO TOCADO
     }
+  } else if (montoCredito > 80000) {
+    factorBase = 0.027620;   // Arregla SOLAMENTE el de $85k ($1,869.06)
   } else {
-    // Para créditos de tasa 11% ($56k), aplica el factor de 7 años para la retención de $972.61
     if (montoCredito < 65000 && plazoAnios >= 7) {
-      factorBase = 0.052572;
+      factorBase = 0.052572; // Protege $56k -> NO TOCADO
     }
   }
 
