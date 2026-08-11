@@ -495,28 +495,15 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
     10: 0.013215
   };
 
- // 1. Obtener factor según el plazo seleccionado en la interfaz
-  let factorBase = factores[plazoAnios] || 0.021247;
+ // 1. Obtener la tasa de interés anual y plazo total en meses
+  const tasaAnual = (tasaInteres || 10) / 100;
+  const tasaMensual = tasaAnual / 12;
+  const totalMeses = plazoAnios * 12;
 
-  // 2. Factores de cuota global fija de Infonavit según el crédito/PDF
-  if (montoCredito < 47000) {
-    if (montoCredito < 28000) {
-      factorBase = 0.049083; // Protege $22k -> NO TOCADO
-    } else if (montoCredito < 35000) {
-      factorBase = 0.041864; // Protege $33k -> NO TOCADO
-    } else {
-      factorBase = 0.039252; // Protege $37k -> NO TOCADO
-    }
-  } else if (montoCredito > 80000) {
-    factorBase = 0.027620;   // Arregla SOLAMENTE el de $85k ($1,869.06)
-  } else {
-    if (montoCredito < 65000 && plazoAnios >= 7) {
-      factorBase = 0.052572; // Protege $56k -> NO TOCADO
-    }
-  }
+  // 2. Cálculo financiero universal (Fórmula PMT / Cuota fija mensual)
+  const pagoTotalCredito = montoCredito * (tasaMensual / (1 - Math.pow(1 + tasaMensual, -totalMeses)));
 
-  // 3. Cálculo exacto
-  const pagoTotalCredito = montoCredito * factorBase;
+  // 3. La retención de nómina es la cuota total menos la aportación del patrón (5% del SBC)
   const retencionCalculada = pagoTotalCredito - patronMensual;
   const retencionMensual = retencionCalculada > 0 ? retencionCalculada : 0;
 
