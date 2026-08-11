@@ -497,7 +497,6 @@ const totalMeses = plazoAnios * 12;
 const pagoTotalRequeridoTeorico = montoCredito * (tasaMensual / (1 - Math.pow(1 + tasaMensual, -totalMeses)));
 
 // 2. Aportación del patrón (5% SBC) y Retención fija del trabajador
-const patronMensual = salario * 0.05;
 const retencionCalculada = pagoTotalRequeridoTeorico - patronMensual;
 const retencionMensual = retencionCalculada > 0 ? retencionCalculada : 0;
 
