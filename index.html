@@ -493,12 +493,13 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
 const tasaMensual = tasaInteresAnual / 12;
 const totalMeses = plazoAnios * 12;
 
-// 2. Cálculo financiero universal (Fórmula PMT / Cuota fija mensual)
-const pagoTotalCredito = montoCredito * (tasaMensual / (1 - Math.pow(1 + tasaMensual, -totalMeses)));
+// 1. Pago mensual total teórico para liquidar a los años seleccionados (Fórmula PMT)
+const pagoTotalRequeridoTeorico = montoCredito * (tasaMensual / (1 - Math.pow(1 + tasaMensual, -totalMeses)));
 
-  // 3. La retención de nómina es la cuota total menos la aportación del patrón (5% del SBC)
-  const retencionCalculada = pagoTotalCredito - patronMensual;
-  const retencionMensual = retencionCalculada > 0 ? retencionCalculada : 0;
+// 2. Aportación del patrón (5% SBC) y Retención fija del trabajador
+const patronMensual = salario * 0.05;
+const retencionCalculada = pagoTotalRequeridoTeorico - patronMensual;
+const retencionMensual = retencionCalculada > 0 ? retencionCalculada : 0;
 
     document.getElementById('montoCreditoDisplay').innerText = formatCurrency(montoCredito) + " MXN";
     document.getElementById('ssvAjustadoDisplay').innerText = formatCurrency(ssvAjustado);
@@ -532,7 +533,9 @@ document.getElementById('displayNssCliente').innerText = document.getElementById
         
         // La retención del cliente sólo paga lo que falte
         retencionAplicada = deudaTotalMes - patronAplicado;
-        if (retencionAplicada < 0) retencionAplicada = 0;
+        if (retencionAplicada < 0) {
+retencionAplicada = 0;
+}
         
         saldo = 0;
       } else {
