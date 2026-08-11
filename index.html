@@ -348,13 +348,17 @@ padding: 2px !important;
       <div class="form-group">
   <label for="selectPlazo">Plazo deseado (Años):</label>
   <select id="selectPlazo" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" onchange="calcularCredito()">
-    <option value="5">5 años</option>
-    <option value="6">6 años</option>
-    <option value="7">7 años</option>
-    <option value="8">8 años</option>
-    <option value="9">9 años</option>
-    <option value="10" selected>10 años</option>
-  </select>
+  <option value="1">1 año</option>
+  <option value="2">2 años</option>
+  <option value="3">3 años</option>
+  <option value="4">4 años</option>
+  <option value="5" selected>5 años</option>
+  <option value="6">6 años</option>
+  <option value="7">7 años</option>
+  <option value="8">8 años</option>
+  <option value="9">9 años</option>
+  <option value="10">10 años</option>
+</select>
 </div>
     </div>
 
@@ -485,18 +489,7 @@ document.getElementById('tasaDisplay').innerText = (tasaInteresAnual * 100).toFi
   document.getElementById('plazoDisplay').innerText = plazoAnios + ' años';
   const maxMeses = plazoAnios * 12;
 
-  // Tabla de factores según el plazo elegido
-  const factores = {
-    5: 0.021247,
-    6: 0.018300,
-    7: 0.016200,
-    8: 0.014800,
-    9: 0.013900,
-    10: 0.013215
-  };
-
  // 1. Obtener la tasa de interés anual y plazo total en meses
-  const tasaAnual = (tasaInteres || 10) / 100;
   const tasaMensual = tasaAnual / 12;
   const totalMeses = plazoAnios * 12;
 
